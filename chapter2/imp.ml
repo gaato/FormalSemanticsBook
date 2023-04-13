@@ -56,10 +56,33 @@ let rec com_equal c1 c2 =
   | _ -> false
 
 
-let test () =
+let test1 () =
   print_endline (Bool.to_string (com_equal (Assign ("X", Const 1)) (Assign ("X", Const 1))));
   print_endline (Bool.to_string (com_equal (Assign ("X", Const 1)) (Assign ("X", Const 2))));
 ;;
 
 
-test();
+test1();
+
+(* Excersize 2.2 *)
+
+type state = (loc, int) Hashtbl.t
+
+let rec eval_aexp (a: aexp) (s: state) : int =
+  match a with
+  | Const n -> n
+  | Var x -> Hashtbl.find s x
+  | Add (a1, a2) -> eval_aexp a1 s + eval_aexp a2 s
+  | Sub (a1, a2) -> eval_aexp a1 s - eval_aexp a2 s
+  | Mul (a1, a2) -> eval_aexp a1 s * eval_aexp a2 s
+
+
+let test2 () =
+  let s = Hashtbl.create 0 in
+  Hashtbl.add s "X" 1;
+  print_endline (Int.to_string (eval_aexp (Const 1) s));
+  print_endline (Int.to_string (eval_aexp (Add (Const 1, Var "X")) s));
+;;
+
+
+test2();
